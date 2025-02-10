@@ -10,7 +10,14 @@ namespace LibraryManagement.Database.Common.Service
         where TDbContext : DbContext
     {
         void Add(TModel model);
-        Task<IEnumerable<TModel>> GetAllAsync(Expression<Func<TModel, bool>> predicate = null, Func<IQueryable<TModel>, IOrderedQueryable<TModel>> orderBy = null, Func<IQueryable<TModel>, IIncludableQueryable<TModel, object>> include = null, int limit = 0, bool enableTracking = true);
+        Task<PagedResponse<TModel>> GetAllAsync(
+            Expression<Func<TModel, bool>> predicate = null,
+            Func<IQueryable<TModel>, IOrderedQueryable<TModel>> orderBy = null,
+            Func<IQueryable<TModel>, IIncludableQueryable<TModel, object>> include = null,
+            int pageNumber = default,
+            int pageSize = default,
+            bool enablePagination = false,
+            bool enableTracking = true);
         Task<TModel> GetByIdAsync(int id, bool enableTracking = true, Func<IQueryable<TModel>, IIncludableQueryable<TModel, object>> include = null);
         void Remove(TModel model);
         void Update(TModel model);

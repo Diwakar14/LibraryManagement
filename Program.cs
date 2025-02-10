@@ -5,6 +5,7 @@ using LibraryManagement.Database.Common.Repository;
 using LibraryManagement.Database.Common.Service;
 using LibraryManagement.Database.Common.UnitOfWork;
 using LibraryManagement.Database.Service;
+using LibraryManagement.Extensions;
 using LibraryManagement.Models;
 using LibraryManagement.Redis;
 using RedLockNet;
@@ -46,26 +47,7 @@ namespace LibraryManagement
 
             builder.Services.AddHangfireServer();
 
-            // Common Repository
-            builder.Services.AddScoped<IRepository<Book, LibraryDbContext>, Repository<Book, LibraryDbContext>>();
-            builder.Services.AddScoped<IRepository<Issuer, LibraryDbContext>, Repository<Issuer, LibraryDbContext>>();
-            builder.Services.AddScoped<IRepository<BookIssuer, LibraryDbContext>, Repository<BookIssuer, LibraryDbContext>>();
-            builder.Services.AddScoped<IRepository<BatchFile, LibraryDbContext>, Repository<BatchFile, LibraryDbContext>>();
-
-            // Common Service
-            builder.Services.AddScoped<IService<Book, LibraryDbContext>, Service<Book, LibraryDbContext>>();
-            builder.Services.AddScoped<IService<Issuer, LibraryDbContext>, Service<Issuer, LibraryDbContext>>();
-            builder.Services.AddScoped<IService<BookIssuer, LibraryDbContext>, Service<BookIssuer, LibraryDbContext>>();
-            builder.Services.AddScoped<IService<BatchFile, LibraryDbContext>, Service<BatchFile, LibraryDbContext>>();
-
-            // Common UnitOfWork
-            builder.Services.AddScoped<IUnitOfWork<LibraryDbContext>, UnitOfWork<LibraryDbContext>>();
-
-            // Library Service
-            builder.Services.AddScoped<IBookService,  BookService>();
-            builder.Services.AddScoped<IIssuerService,  IssuerService>();
-            builder.Services.AddScoped<IIssueBookService, IssueBookService>();
-            builder.Services.AddScoped<IBatchFileService, BatchFileService>();
+            builder.Services.AddApplicationService();
 
 
             var app = builder.Build();

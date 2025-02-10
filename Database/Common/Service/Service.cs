@@ -15,15 +15,17 @@ namespace LibraryManagement.Database.Common.Service
             this.repository = repository;
         }
 
-        public async Task<IEnumerable<TModel>> GetAllAsync(
+        public async Task<PagedResponse<TModel>> GetAllAsync(
             Expression<Func<TModel, bool>> predicate = null,
             Func<IQueryable<TModel>, IOrderedQueryable<TModel>> orderBy = null,
             Func<IQueryable<TModel>, IIncludableQueryable<TModel, object>> include = null,
-            int limit = default,
+            int pageNumber = default,
+            int pageSize = default,
+            bool enablePagination = false,
             bool enableTracking = true
             )
         {
-            var list = await repository.GetAllAsync(predicate, orderBy, include, limit, enableTracking);
+            var list = await repository.GetAllAsync(predicate, orderBy, include, pageNumber, pageSize,enablePagination, enableTracking);
             return list;
         }
 

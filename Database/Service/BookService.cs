@@ -2,6 +2,7 @@
 using LibraryManagement.Database.Common.Repository;
 using LibraryManagement.Database.Common.Service;
 using LibraryManagement.Database.Common.UnitOfWork;
+using LibraryManagement.Dtos;
 using LibraryManagement.Dtos.Book;
 using LibraryManagement.Extensions;
 using LibraryManagement.Models;
@@ -30,15 +31,15 @@ namespace LibraryManagement.Database.Service
             this.distributedLockFactory = distributedLockFactory;
         }
 
-        public async Task<IEnumerable<BookDto>> GetBooksAsync()
+        public async Task<PagedResponseDto<BookDto>> GetBooksAsync(BookQueryParams queryParams)
         {
             await using var _lock = await distributedLockFactory.CreateLockAsync(
                 nameof(GetBooksAsync), TimeSpan.FromMinutes(10), TimeSpan.FromMinutes(1), TimeSpan.FromMilliseconds(10));
 
             if (_lock.IsAcquired)
             {
-                var books = await repository.GetAllAsync();
-                var booksToDto = mapper.Map<IEnumerable<BookDto>>(books);
+                var books = await repository.GetAllAsync(null, null, null, queryParams.pageNumber, queryParams.pageSize, true,false);
+                var booksToDto = mapper.Map<PagedResponseDto<BookDto>>(books);
                 return booksToDto;
             }
 

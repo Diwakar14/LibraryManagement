@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using LibraryManagement.Dtos;
 using LibraryManagement.Dtos.Book;
 using LibraryManagement.Dtos.Issuer;
 using LibraryManagement.Models;
@@ -20,6 +21,10 @@ namespace LibraryManagement.MappingProfile
 
             CreateMap<Issuer, CreateIssuerDto>()
                 .ReverseMap();
+
+            CreateMap<PagedResponse<Book>, PagedResponseDto<BookDto>>()
+                .ReverseMap();
+                
         }
     }
 }

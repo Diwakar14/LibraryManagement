@@ -1,4 +1,5 @@
 ﻿using LibraryManagement.Database.Service;
+using LibraryManagement.Dtos;
 using LibraryManagement.Dtos.Book;
 using LibraryManagement.Redis;
 using Microsoft.AspNetCore.Http;
@@ -20,19 +21,19 @@ namespace LibraryManagement.Controllers
         }
 
         [HttpGet("GetAll")]
-        public async Task<IActionResult> GetAllBooksAsync()
+        public async Task<IActionResult> GetAllBooksAsync([FromQuery] BookQueryParams queryParams)
         {
             try
             {
                 var key = $"BookController:GetAllBooksAsync";
-                var cachedData = await redisService.GetKeyAsync<IEnumerable<BookDto>>(key);
-                IEnumerable<BookDto> books = cachedData;
+                var cachedData = await redisService.GetKeyAsync<PagedResponseDto<BookDto>>(key);
+                PagedResponseDto<BookDto> books = cachedData;
 
-                if (cachedData == null)
-                {
-                    books = await bookService.GetBooksAsync();
+                //if (cachedData == null)
+                //{
+                    books = await bookService.GetBooksAsync(queryParams);
                     await redisService.SetKeyAsync(key, books, TimeSpan.FromMinutes(10));
-                }
+                //}
                 
                 return Ok(books);
             }

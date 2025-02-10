@@ -16,15 +16,18 @@ namespace LibraryManagement.Database.Common.Repository
             this.context = context;
         }
 
-        public async Task<IEnumerable<TModel>> GetAllAsync(
+        public async Task<PagedResponse<TModel>> GetAllAsync(
             Expression<Func<TModel, bool>> predicate = null,
             Func<IQueryable<TModel>, IOrderedQueryable<TModel>> orderBy = null,
             Func<IQueryable<TModel>, IIncludableQueryable<TModel, object>> include = null,
-            int limit = default,
+            int pageNumber = default,
+            int pageSize = default,
+            bool enablePagination = false,
             bool enableTracking = true
             )
         {
             IQueryable<TModel> query = context.Set<TModel>();
+            int totalCount = 0;
 
             if (!enableTracking)
             {
@@ -41,14 +44,21 @@ namespace LibraryManagement.Database.Common.Repository
                 query = include(query);
             }
 
-            query.Take(limit);
+            if (enablePagination)
+            {
+                totalCount = await query.CountAsync();
+                query = query.Skip((pageNumber - 1) * pageSize);
+                query = query.Take(pageSize);
+            }
 
             if (orderBy != null)
             {
-                return await orderBy(query).ToListAsync();
+                query = orderBy(query);
             }
 
-            return await query.ToListAsync();
+            var records = await query.ToListAsync();
+            var pagedResponse = new PagedResponse<TModel>(records, pageNumber, pageSize, totalCount);
+            return pagedResponse;
         }
 
         public async Task<TModel> GetByIdAsync(

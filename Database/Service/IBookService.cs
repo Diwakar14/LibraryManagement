@@ -1,11 +1,12 @@
-﻿using LibraryManagement.Dtos.Book;
+﻿using LibraryManagement.Dtos;
+using LibraryManagement.Dtos.Book;
 using LibraryManagement.Models;
 
 namespace LibraryManagement.Database.Service
 {
     public interface IBookService
     {
-        Task<IEnumerable<BookDto>> GetBooksAsync();
+        Task<PagedResponseDto<BookDto>> GetBooksAsync(BookQueryParams queryParams);
         bool IsBookFileProcessed(string file);
         Task<bool> AddBookFileAsync(string file);
         Task<bool> AddBooksAsync(IEnumerable<Book> books, bool checkDuplicate = false); 
