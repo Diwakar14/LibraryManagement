@@ -29,12 +29,12 @@ namespace LibraryManagement.Controllers
                 var cachedData = await redisService.GetKeyAsync<PagedResponseDto<BookDto>>(key);
                 PagedResponseDto<BookDto> books = cachedData;
 
-                //if (cachedData == null)
-                //{
+                if (cachedData == null)
+                {
                     books = await bookService.GetBooksAsync(queryParams);
                     await redisService.SetKeyAsync(key, books, TimeSpan.FromMinutes(10));
-                //}
-                
+                }
+
                 return Ok(books);
             }
             catch (Exception ex)
